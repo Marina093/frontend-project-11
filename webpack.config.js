@@ -1,14 +1,16 @@
-import path, { dirname } from 'path';
+import path from 'path';
 import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 export default {
   mode: process.env.NODE_ENV || 'development',
-  entry: path.resolve('.', 'src', 'index.js'),
+  entry: './src/index.js',
   output: {
-    filename: 'main.js',
-    path: path.resolve(dirname(fileURLToPath(import.meta.url)), 'dist'),
-    clean: true,
+    path: path.resolve(dirname, 'dist'),
   },
   devServer: {
     open: true,
@@ -17,20 +19,20 @@ export default {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        test: /\.js$/,
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader', 'postcss-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
       },
       {
-        test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: 'url-loader?limit=10000',
-      },
-      {
-        test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
-        use: 'file-loader',
+        test: /\.html$/i,
+        use: 'html-loader',
       },
     ],
   },
@@ -38,5 +40,6 @@ export default {
     new HtmlWebpackPlugin({
       template: 'index.html',
     }),
+    new MiniCssExtractPlugin(),
   ],
 };
