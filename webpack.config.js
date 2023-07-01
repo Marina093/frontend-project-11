@@ -1,8 +1,15 @@
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 export default {
   mode: process.env.NODE_ENV || 'development',
-  entry: './src/index.js',
+  entry: path.resolve('.', 'src', 'index.js'),
+  output: {
+    filename: 'main.js',
+    path: path.resolve(dirname(fileURLToPath(import.meta.url)), 'dist'),
+    clean: true,
+  },
   devServer: {
     open: true,
     host: 'localhost',
